@@ -26,7 +26,7 @@ public class Game {
     @ManyToOne
     private Category category;
 
-    @OneToMany(mappedBy = "game", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "game", cascade = CascadeType.MERGE, orphanRemoval = true)
     private List<UserGame> users = new ArrayList<>();
 }
 
