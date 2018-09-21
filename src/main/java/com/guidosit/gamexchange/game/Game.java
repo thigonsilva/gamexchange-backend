@@ -1,13 +1,15 @@
 package com.guidosit.gamexchange.game;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.guidosit.gamexchange.category.Category;
+import com.guidosit.gamexchange.usergame.UserGame;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -23,5 +25,8 @@ public class Game {
 
     @ManyToOne
     private Category category;
+
+    @OneToMany(mappedBy = "game", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserGame> users = new ArrayList<>();
 }
 

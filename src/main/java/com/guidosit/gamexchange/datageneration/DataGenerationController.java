@@ -4,6 +4,8 @@ import com.guidosit.gamexchange.category.Category;
 import com.guidosit.gamexchange.category.CategoryService;
 import com.guidosit.gamexchange.game.Game;
 import com.guidosit.gamexchange.game.GameService;
+import com.guidosit.gamexchange.user.User;
+import com.guidosit.gamexchange.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +19,8 @@ public class DataGenerationController {
     private CategoryService categoryService;
     @Autowired
     private GameService gameService;
+    @Autowired
+    private UserService userService;
 
     @GetMapping
     public void generateData(){
@@ -70,6 +74,27 @@ public class DataGenerationController {
         game.setPlatform("Ps4");
         game.setCategory(categoryService.getCategoryByName("Ação").orElse(null));
         gameService.save(game);
+
+        User user = new User();
+        user.setName("Thiago Gonçalves da Silva");
+        user.setEmail("thigonsilva@gmail.com");
+        user.setNickname("Thigas");
+        user.setPassword("123456");
+        userService.save(user);
+
+        user = new User();
+        user.setName("Hugo Melo");
+        user.setEmail("hugo@gmail.com");
+        user.setNickname("Hugo");
+        user.setPassword("123456");
+        userService.save(user);
+
+        user = new User();
+        user.setName("José Elder");
+        user.setEmail("jose@gmail.com");
+        user.setNickname("José");
+        user.setPassword("123456");
+        userService.save(user);
     }
 
 }

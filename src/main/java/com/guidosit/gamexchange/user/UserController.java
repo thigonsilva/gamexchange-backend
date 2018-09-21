@@ -1,5 +1,7 @@
 package com.guidosit.gamexchange.user;
 
+import com.guidosit.gamexchange.game.GameNotFoundException;
+import com.guidosit.gamexchange.game.GameRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,6 +20,12 @@ public class UserController {
     @PostMapping
     public User createUser(@RequestBody User user){
         return userService.save(user);
+    }
+
+    @PutMapping("/{id}/game")
+    public void addGame(@PathVariable Integer id, @RequestBody GameRequest game)
+            throws UserNotFoundException, GameNotFoundException {
+        userService.addGame(id, game.getGameId());
     }
 
 }
