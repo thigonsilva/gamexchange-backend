@@ -1,23 +1,49 @@
 package com.guidosit.gamexchange.user;
 
+import com.guidosit.gamexchange.game.GameResponse;
 import com.guidosit.gamexchange.usergame.UserGame;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Data @Setter
 public class UserResponse {
-    private User user;
+
+    private Integer id;
+    private String name;
+    private String nickname;
+    private String email;
+    private List<GameResponse> games;
+
+    public UserResponse(Integer id, String name, String nickname, String email) {
+        this.id = id;
+        this.name = name;
+        this.nickname = nickname;
+        this.email = email;
+    }
 
     public static UserResponse returnUser(User user) {
+        List<GameResponse> games = new ArrayList<>();
         for (UserGame userGame: user.getGames()){
-            userGame.setUser(null);
-            userGame.getGame().setUsers(null);
-            userGame.getGame().getCategory().setGames(null);
+            games.add(new GameResponse(userGame.getId(), userGame.getGame().getName(),
+                    userGame.getGame().getDescription(), userGame.getGame().getPlatform(), userGame.getInsertDate(), userGame.getTradeDate(), userGame.getIsAvailable()));
         }
-        return new UserResponse(user);
+        return new UserResponse(user.getId(), user.getName(), user.getNickname(), user.getEmail(), games);
+    }
+
+    public static List<UserResponse> returnUsers(List<User> users) {
+        List<UserResponse> lst = new ArrayList<>();
+        for (User u :
+                users) {
+            lst.add(new UserResponse(u.getId(), u.getName(), u.getNickname(), u.getEmail()));
+        }
+
+        return null;
     }
 }

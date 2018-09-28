@@ -4,8 +4,10 @@ import com.guidosit.gamexchange.game.Game;
 import com.guidosit.gamexchange.game.GameNotFoundException;
 import com.guidosit.gamexchange.game.GameService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -35,5 +37,9 @@ public class UserService {
         } else {
             throw new UserNotFoundException("Usuario de ID "+ id +" não encontrado.");
         }
+    }
+
+    public Optional<List<User>> getUsersForGame(Integer id) {
+        return userRepository.getUsersForGame(id);
     }
 }

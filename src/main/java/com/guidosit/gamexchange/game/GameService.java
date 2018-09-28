@@ -1,6 +1,10 @@
 package com.guidosit.gamexchange.game;
 
 
+import com.guidosit.gamexchange.user.User;
+import com.guidosit.gamexchange.user.UserService;
+import com.guidosit.gamexchange.usergame.UserGame;
+import com.guidosit.gamexchange.usergame.UserGameService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
@@ -13,6 +17,8 @@ public class GameService {
 
     @Autowired
     private GameRepository gameRepository;
+    @Autowired
+    private UserGameService userGameService;
 
     public Game save(Game game){
         return gameRepository.save(game);
@@ -22,11 +28,15 @@ public class GameService {
         return gameRepository.findById(id);
     }
 
-    public List<Game> getGames() {
-        return gameRepository.findAll();
+    public Optional<List<Game>> getGames() {
+        return gameRepository.getAvailableGames();
     }
 
     public Optional<Game> getGame(Game game) {
         return gameRepository.findOne(Example.of(game));
+    }
+
+    public Optional<List<UserGame>> getUsersForGame(Integer id) throws GameNotFoundException {
+        return userGameService.getUsersForGame(gameRepository.findById(id).orElseThrow(() -> new GameNotFoundException()));
     }
 }
