@@ -24,7 +24,7 @@ public class DataGenerationController {
 
     @GetMapping
     public void generateData(){
-        Category category = new Category();
+        /*Category category = new Category();
         category.setName("RPG");
         categoryService.saveCategory(category);
 
@@ -94,7 +94,7 @@ public class DataGenerationController {
         user.setEmail("jose@gmail.com");
         user.setNickname("José");
         user.setPassword("123456");
-        userService.save(user);
+        userService.save(user);*/
     }
 
 }

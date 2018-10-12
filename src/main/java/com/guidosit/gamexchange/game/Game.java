@@ -23,10 +23,7 @@ public class Game {
     private String description;
     private String platform;
 
-    @ManyToOne
-    private Category category;
-
-    @OneToMany(mappedBy = "game", cascade = CascadeType.MERGE, orphanRemoval = true)
+    @OneToMany(mappedBy = "game", cascade = CascadeType.MERGE, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<UserGame> users = new ArrayList<>();
 }
 

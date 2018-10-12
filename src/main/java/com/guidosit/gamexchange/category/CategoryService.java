@@ -12,8 +12,8 @@ public class CategoryService {
     @Autowired
     private CategoryRepository categoryRepository;
 
-    public Category getCategory(Integer id) {
-        return categoryRepository.findById(id).get();
+    public Category getCategory(Integer id) throws CategoryNotFoundException {
+        return categoryRepository.findById(id).orElseThrow(() -> new CategoryNotFoundException());
     }
 
     public Category saveCategory(Category category) {

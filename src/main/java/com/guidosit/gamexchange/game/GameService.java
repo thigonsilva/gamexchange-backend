@@ -1,8 +1,8 @@
 package com.guidosit.gamexchange.game;
 
 
-import com.guidosit.gamexchange.user.User;
-import com.guidosit.gamexchange.user.UserService;
+import com.guidosit.gamexchange.exchangeproposal.ExchangeProposalService;
+import com.guidosit.gamexchange.usergame.GameNotFoundForThisUser;
 import com.guidosit.gamexchange.usergame.UserGame;
 import com.guidosit.gamexchange.usergame.UserGameService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +19,8 @@ public class GameService {
     private GameRepository gameRepository;
     @Autowired
     private UserGameService userGameService;
+    @Autowired
+    private ExchangeProposalService exchangeProposalService;
 
     public Game save(Game game){
         return gameRepository.save(game);
@@ -38,5 +40,10 @@ public class GameService {
 
     public Optional<List<UserGame>> getUsersForGame(Integer id) throws GameNotFoundException {
         return userGameService.getUsersForGame(gameRepository.findById(id).orElseThrow(() -> new GameNotFoundException()));
+    }
+
+    public void proposeExchange(Integer gameId, Integer requesterUserId) throws GameNotFoundForThisUser {
+        exchangeProposalService.makeProposal(
+                userGameService.getUserGame(gameId).orElseThrow(() -> new GameNotFoundForThisUser()), requesterUserId);
     }
 }

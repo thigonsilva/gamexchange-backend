@@ -1,19 +1,19 @@
 package com.guidosit.gamexchange.game;
 
-import com.guidosit.gamexchange.user.User;
-import com.guidosit.gamexchange.user.UserNotFoundException;
-import com.guidosit.gamexchange.user.UserResponse;
+import com.guidosit.gamexchange.exchangeproposal.ExchangeProposalRequest;
+import com.guidosit.gamexchange.usergame.GameNotFoundForThisUser;
 import com.guidosit.gamexchange.usergame.UserGameResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @RestController
+@CrossOrigin("*")
 @RequestMapping("/game")
-
 public class GameController {
 
     @Autowired
@@ -42,5 +42,18 @@ public class GameController {
 
     @PostMapping
     public Game createGame(@RequestBody Game game){return gameService.save(game);}
+
+    @PostMapping("/{id}/propose")
+    public void proposeExchange(@PathVariable Integer id, Principal principal) throws GameNotFoundForThisUser {
+        Integer userId = new Integer(1);
+        if (principal.getName().equalsIgnoreCase("elder@gmail.com")) {
+            userId = new Integer(3);
+        }
+        if (principal.getName().equalsIgnoreCase("hugo@gmail.com")) {
+            userId = new Integer(2);
+        }
+
+        gameService.proposeExchange(id, userId);
+    }
 
 }

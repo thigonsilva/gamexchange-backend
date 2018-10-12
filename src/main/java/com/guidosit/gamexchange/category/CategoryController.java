@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
+@CrossOrigin("*")
 @RequestMapping("category")
-
 public class CategoryController {
 
     @Autowired
@@ -19,13 +19,13 @@ public class CategoryController {
         List<CategoryResponse> categoryResponseList = new ArrayList<>();
         List<Category> categories = categoryService.getCategories();
         for (Category c: categories) {
-            categoryResponseList.add(CategoryResponse.returnCategory(c));
+            categoryResponseList.add(CategoryResponse.returnCategoryWithoutGames(c));
         }
         return categoryResponseList;
     }
 
     @GetMapping("/{id}")
-    public CategoryResponse getCategory(@PathVariable Integer id){
+    public CategoryResponse getCategory(@PathVariable Integer id) throws CategoryNotFoundException {
         return CategoryResponse.returnCategory(categoryService.getCategory(id));
     }
 

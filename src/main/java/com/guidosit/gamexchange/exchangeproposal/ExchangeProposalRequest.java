@@ -1,4 +1,4 @@
-package com.guidosit.gamexchange.proposal;
+package com.guidosit.gamexchange.exchangeproposal;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,8 +7,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class ProposalRequest {
+public class ExchangeProposalRequest {
 
-    private Integer id;
+    private Integer requesterUserId;
 
 }

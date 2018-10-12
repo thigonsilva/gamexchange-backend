@@ -1,5 +1,6 @@
 package com.guidosit.gamexchange.game;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.guidosit.gamexchange.user.UserResponse;
 import com.guidosit.gamexchange.usergame.UserGameId;
 import lombok.AllArgsConstructor;
@@ -12,7 +13,8 @@ import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Data @Setter
+@Data
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class GameResponse {
 
     private Integer id;

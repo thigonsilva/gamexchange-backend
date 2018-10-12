@@ -11,14 +11,14 @@ import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Data @Setter
+@Data
 @Entity
 public class Category {
     @Id @GeneratedValue (strategy = GenerationType.IDENTITY)
     private Integer id;
     private String name;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id")
     private List<Game> games;
 }
