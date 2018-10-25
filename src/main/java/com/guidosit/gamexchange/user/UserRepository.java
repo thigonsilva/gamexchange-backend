@@ -15,4 +15,6 @@ public interface UserRepository extends JpaRepository<User, Integer> {
             " where ug.game_id = :id ", nativeQuery = true)
     Optional<List<User>> getUsersForGame(Integer id);
 
+    Optional<User> findUserByEmail(String email);
+
 }

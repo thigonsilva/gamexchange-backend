@@ -4,6 +4,7 @@ import com.guidosit.gamexchange.exchangeproposal.ExchangeProposalResponse;
 import com.guidosit.gamexchange.game.GameNotFoundException;
 import com.guidosit.gamexchange.game.GameRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -18,6 +19,12 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @GetMapping
+    public UserResponse getUser(Authentication auth) throws UserNotFoundException {
+        User userByEmail = userService.getUserByEmail(auth.getName());
+        return UserResponse.returnUser(userByEmail);
+    }
+
     @GetMapping("/{id}")
     public UserResponse getUser(@PathVariable Integer id){
         return UserResponse.returnUser(userService.getUser(id));
@@ -28,10 +35,10 @@ public class UserController {
         return userService.save(user);
     }
 
-    @PutMapping("/{id}/game")
-    public void addGame(@PathVariable Integer id, @RequestBody GameRequest game)
+    @PutMapping("/game")
+    public void addGame(@RequestBody GameRequest game, Authentication auth)
             throws UserNotFoundException, GameNotFoundException {
-        userService.addGame(id, game.getGameId());
+        userService.addGame(userService.getUserByEmail(auth.getName()), game.getGameId());
     }
 
     @GetMapping("/proposals")

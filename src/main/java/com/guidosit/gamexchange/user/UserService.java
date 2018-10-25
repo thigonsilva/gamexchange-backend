@@ -35,16 +35,10 @@ public class UserService {
         return userRepository.findById(id).get();
     }
 
-    public void addGame(Integer id, Integer gameId) throws UserNotFoundException, GameNotFoundException {
-        Optional<User> optional = userRepository.findById(id);
-        if (optional.isPresent()) {
-            User user = optional.get();
-            user.addGame(gameService.getGame(gameId).orElseThrow(() ->
-                    new GameNotFoundException("Jogo não encontrado")));
-            userRepository.save(user);
-        } else {
-            throw new UserNotFoundException("Usuario de ID "+ id +" não encontrado.");
-        }
+    public void addGame(User user, Integer gameId) throws UserNotFoundException, GameNotFoundException {
+        user.addGame(gameService.getGame(gameId).orElseThrow(() ->
+                new GameNotFoundException("Jogo não encontrado")));
+        userRepository.save(user);
     }
 
     public Optional<List<User>> getUsersForGame(Integer id) {
@@ -53,5 +47,9 @@ public class UserService {
 
     public Optional<List<ExchangeProposal>> getProposalsForUser(Integer id) throws UserNotFoundException {
         return exchangeProposalService.getProposals(userRepository.findById(id).orElseThrow(() -> new UserNotFoundException()));
+    }
+
+    public User getUserByEmail(String email) throws UserNotFoundException {
+        return userRepository.findUserByEmail(email).orElseThrow(() -> new UserNotFoundException());
     }
 }

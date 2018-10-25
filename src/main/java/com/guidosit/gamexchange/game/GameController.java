@@ -1,6 +1,5 @@
 package com.guidosit.gamexchange.game;
 
-import com.guidosit.gamexchange.exchangeproposal.ExchangeProposalRequest;
 import com.guidosit.gamexchange.usergame.GameNotFoundForThisUser;
 import com.guidosit.gamexchange.usergame.UserGameResponse;
 import org.springframework.beans.factory.annotation.Autowired;
