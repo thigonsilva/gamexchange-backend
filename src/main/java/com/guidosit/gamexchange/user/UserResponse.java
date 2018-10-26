@@ -46,4 +46,8 @@ public class UserResponse {
 
         return null;
     }
+
+    public static List<GameResponse> returnUserGames(User user) {
+        return GameResponse.returnGames(user.getGames());
+    }
 }

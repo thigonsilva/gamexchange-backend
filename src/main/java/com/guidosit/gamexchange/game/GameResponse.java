@@ -2,6 +2,7 @@ package com.guidosit.gamexchange.game;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.guidosit.gamexchange.user.UserResponse;
+import com.guidosit.gamexchange.usergame.UserGame;
 import com.guidosit.gamexchange.usergame.UserGameId;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @NoArgsConstructor
@@ -48,4 +50,12 @@ public class GameResponse {
     }
 
 
+    public static List<GameResponse> returnGames(List<UserGame> games) {
+        List<GameResponse> lst = new ArrayList<>();
+        for (UserGame ug :
+                games) {
+            lst.add(GameResponse.returnGame(ug.getGame()));
+        }
+        return lst;
+    }
 }

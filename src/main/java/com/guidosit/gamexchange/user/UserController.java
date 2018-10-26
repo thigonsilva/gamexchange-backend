@@ -3,6 +3,7 @@ package com.guidosit.gamexchange.user;
 import com.guidosit.gamexchange.exchangeproposal.ExchangeProposalResponse;
 import com.guidosit.gamexchange.game.GameNotFoundException;
 import com.guidosit.gamexchange.game.GameRequest;
+import com.guidosit.gamexchange.game.GameResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +24,12 @@ public class UserController {
     public UserResponse getUser(Authentication auth) throws UserNotFoundException {
         User userByEmail = userService.getUserByEmail(auth.getName());
         return UserResponse.returnUser(userByEmail);
+    }
+
+    @GetMapping("/games")
+    public List<GameResponse> getGamesFromUser(Authentication auth) throws UserNotFoundException {
+        User userByEmail = userService.getUserByEmail(auth.getName());
+        return UserResponse.returnUserGames(userByEmail);
     }
 
     @GetMapping("/{id}")
