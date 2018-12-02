@@ -3,6 +3,7 @@ package com.guidosit.gamexchange.game;
 import com.guidosit.gamexchange.usergame.GameNotFoundForThisUser;
 import com.guidosit.gamexchange.usergame.UserGameResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -19,9 +20,13 @@ public class GameController {
     private GameService gameService;
 
     @GetMapping
-    public List<GameResponse> getGames(){
+    public List<GameResponse> getGames(Authentication auth){
         List<GameResponse> gameResponseList = new ArrayList<>();
-        Optional<List<Game>> games = gameService.getGames();
+        Optional<List<Game>> games;
+
+        if (!auth.isAuthenticated()) games = gameService.getGames();
+        else games = gameService.getGamesFromOtherUsers(auth.getName());
+
         List<Game> lstGames = games.orElse(new ArrayList<>());
         for (Game g: lstGames) {
             gameResponseList.add(GameResponse.returnGame(g));
@@ -40,19 +45,14 @@ public class GameController {
     }
 
     @PostMapping
-    public Game createGame(@RequestBody Game game){return gameService.save(game);}
+    public Game createGame(@RequestBody GameRequest game){
+        return gameService.save(new Game(game.getName(), game.getDescription(),
+                game.getPlatform(), game.getCategoryId()));
+    }
 
     @PostMapping("/{id}/propose")
-    public void proposeExchange(@PathVariable Integer id, Principal principal) throws GameNotFoundForThisUser {
-        Integer userId = new Integer(1);
-        if (principal.getName().equalsIgnoreCase("elder@gmail.com")) {
-            userId = new Integer(3);
-        }
-        if (principal.getName().equalsIgnoreCase("hugo@gmail.com")) {
-            userId = new Integer(2);
-        }
-
-        gameService.proposeExchange(id, userId);
+    public void proposeExchange(@PathVariable Integer id, Authentication auth) throws GameNotFoundForThisUser {
+        gameService.proposeExchange(id, auth.getName());
     }
 
 }

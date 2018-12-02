@@ -4,6 +4,7 @@ import com.guidosit.gamexchange.exchangeproposal.ExchangeProposalResponse;
 import com.guidosit.gamexchange.game.GameNotFoundException;
 import com.guidosit.gamexchange.game.GameRequest;
 import com.guidosit.gamexchange.game.GameResponse;
+import com.guidosit.gamexchange.usergame.UserGameResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -11,9 +12,10 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
-@CrossOrigin
+@CrossOrigin("*")
 @RequestMapping("/user")
 public class UserController {
 
@@ -21,15 +23,14 @@ public class UserController {
     private UserService userService;
 
     @GetMapping
-    public UserResponse getUser(Authentication auth) throws UserNotFoundException {
-        User userByEmail = userService.getUserByEmail(auth.getName());
-        return UserResponse.returnUser(userByEmail);
+    public UserResponse getUser(Authentication auth) {
+        return UserResponse.returnUser(userService.getUser(auth.getName()));
     }
 
     @GetMapping("/games")
-    public List<GameResponse> getGamesFromUser(Authentication auth) throws UserNotFoundException {
-        User userByEmail = userService.getUserByEmail(auth.getName());
-        return UserResponse.returnUserGames(userByEmail);
+    public List<UserGameResponse> getGamesFromUser(Authentication auth) throws UserNotFoundException {
+        User userByEmail = userService.getUser(auth.getName());
+        return UserGameResponse.returnGamesFromUserGames(userByEmail.getGames());
     }
 
     @GetMapping("/{id}")
@@ -38,27 +39,20 @@ public class UserController {
     }
 
     @PostMapping
-    public User createUser(@RequestBody User user){
-        return userService.save(user);
+    public UserResponse createUser(@RequestBody UserRequest user){
+        return UserResponse.returnUser(userService.createUser(user.getName(), Optional.ofNullable(user.getNickname()), user.getEmail(),
+                user.getPassword(), Optional.ofNullable(user.getUsername()), user.getDdd(), user.getCellphone()));
     }
 
-    @PutMapping("/game")
+    @PostMapping("/game")
     public void addGame(@RequestBody GameRequest game, Authentication auth)
             throws UserNotFoundException, GameNotFoundException {
-        userService.addGame(userService.getUserByEmail(auth.getName()), game.getGameId());
+        userService.addGame(userService.getUser(auth.getName()), game.getGameId());
     }
 
     @GetMapping("/proposals")
-    public List<ExchangeProposalResponse> getProposals(Principal principal) throws UserNotFoundException {
-        Integer userId = new Integer(1);
-        if (principal.getName().equalsIgnoreCase("elder@gmail.com")) {
-            userId = new Integer(3);
-        }
-        if (principal.getName().equalsIgnoreCase("hugo@gmail.com")) {
-            userId = new Integer(2);
-        }
-
-        return ExchangeProposalResponse.returnListOfProposals(userService.getProposalsForUser(userId).orElse(new ArrayList<>()));
+    public List<ExchangeProposalResponse> getProposals(Authentication auth) throws UserNotFoundException {
+        return ExchangeProposalResponse.returnListOfProposals(userService.getProposalsForUser(auth.getName()).orElse(new ArrayList<>()));
     }
 
 }

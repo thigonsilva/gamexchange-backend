@@ -2,6 +2,7 @@ package com.guidosit.gamexchange.user;
 
 import com.guidosit.gamexchange.game.GameResponse;
 import com.guidosit.gamexchange.usergame.UserGame;
+import com.guidosit.gamexchange.usergame.UserGameResponse;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,9 +17,7 @@ import java.util.List;
 public class UserResponse {
 
     private Integer id;
-    private String name;
-    private String nickname;
-    private String email;
+    private String name, nickname, email, ddd, cellphone;
     private List<GameResponse> games;
 
     public UserResponse(Integer id, String name, String nickname, String email) {
@@ -34,7 +33,7 @@ public class UserResponse {
             games.add(new GameResponse(userGame.getId(), userGame.getGame().getName(),
                     userGame.getGame().getDescription(), userGame.getGame().getPlatform(), userGame.getInsertDate(), userGame.getTradeDate(), userGame.getIsAvailable()));
         }
-        return new UserResponse(user.getId(), user.getName(), user.getNickname(), user.getEmail(), games);
+        return new UserResponse(user.getId(), user.getName(), user.getNickname(), user.getEmail(), user.getDdd(), user.getCellphone(), games);
     }
 
     public static List<UserResponse> returnUsers(List<User> users) {
@@ -47,7 +46,7 @@ public class UserResponse {
         return null;
     }
 
-    public static List<GameResponse> returnUserGames(User user) {
-        return GameResponse.returnGames(user.getGames());
+    public static List<UserGameResponse> returnUserGames(User user) {
+        return UserGameResponse.returnUsersForGame(user.getGames());
     }
 }

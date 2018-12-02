@@ -9,5 +9,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @Data @Setter
 public class GameRequest {
-    private Integer gameId;
+    private Integer gameId, categoryId;
+    private String name, description, platform;
 }

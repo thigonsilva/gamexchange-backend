@@ -2,6 +2,7 @@ package com.guidosit.gamexchange.game;
 
 
 import com.guidosit.gamexchange.exchangeproposal.ExchangeProposalService;
+import com.guidosit.gamexchange.user.UserService;
 import com.guidosit.gamexchange.usergame.GameNotFoundForThisUser;
 import com.guidosit.gamexchange.usergame.UserGame;
 import com.guidosit.gamexchange.usergame.UserGameService;
@@ -21,6 +22,8 @@ public class GameService {
     private UserGameService userGameService;
     @Autowired
     private ExchangeProposalService exchangeProposalService;
+    @Autowired
+    private UserService userService;
 
     public Game save(Game game){
         return gameRepository.save(game);
@@ -42,8 +45,12 @@ public class GameService {
         return userGameService.getUsersForGame(gameRepository.findById(id).orElseThrow(() -> new GameNotFoundException()));
     }
 
-    public void proposeExchange(Integer gameId, Integer requesterUserId) throws GameNotFoundForThisUser {
+    public void proposeExchange(Integer gameId, String username) throws GameNotFoundForThisUser {
         exchangeProposalService.makeProposal(
-                userGameService.getUserGame(gameId).orElseThrow(() -> new GameNotFoundForThisUser()), requesterUserId);
+                userGameService.getUserGame(gameId).orElseThrow(() -> new GameNotFoundForThisUser()), userService.getUser(username).getId());
+    }
+
+    public Optional<List<Game>> getGamesFromOtherUsers(String username) {
+        return gameRepository.getAvailableGames(userService.getUser(username).getId());
     }
 }

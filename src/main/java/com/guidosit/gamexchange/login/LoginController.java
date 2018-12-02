@@ -2,9 +2,9 @@ package com.guidosit.gamexchange.login;
 
 import com.guidosit.gamexchange.user.User;
 import com.guidosit.gamexchange.user.UserNotFoundException;
+import com.guidosit.gamexchange.user.UserResponse;
 import com.guidosit.gamexchange.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,16 +20,19 @@ public class LoginController {
     private UserService userService;
 
     @PostMapping
-    public ResponseEntity login(Authentication auth) throws UserNotFoundException {
+    public UserResponse login(Authentication auth) throws UserNotFoundException {
 
         System.out.println("auth.getName() = " + auth.getName());
 
-        User userByEmail = userService.getUserByEmail(auth.getName());
-//        if (!userByEmail.getPassword().equals(auth.getCredentials())) throw new LoginFailureException();
+        String username = auth.getName();
+        User user;
+        if (username.indexOf("@") != -1)
+            user = userService.getUserByEmail(auth.getName());
+        else{
+            user = userService.getUser(auth.getName());
+        }
 
-        //httpSession.setAttribute("user", userByEmail);
-
-        return ResponseEntity.ok().build();
+        return UserResponse.returnUser(user);
     }
 
 }
