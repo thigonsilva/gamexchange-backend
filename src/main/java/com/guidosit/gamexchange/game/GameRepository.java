@@ -19,6 +19,6 @@ public interface GameRepository extends JpaRepository<Game ,Integer> {
     @Query(value = " select distinct g.* from game g " +
             " inner join user_game ug on ug.game_id = g.id " +
             " where ug.is_available = TRUE " +
-            " AND ug.user_id <> :id; ", nativeQuery = true)
+            " AND ug.user_id <> :id ", nativeQuery = true)
     Optional<List<Game>> getAvailableGames(@Param("id") Integer id);
 }

@@ -25,12 +25,7 @@ public class LoginController {
         System.out.println("auth.getName() = " + auth.getName());
 
         String username = auth.getName();
-        User user;
-        if (username.indexOf("@") != -1)
-            user = userService.getUserByEmail(auth.getName());
-        else{
-            user = userService.getUser(auth.getName());
-        }
+        User user = userService.getUser(auth.getName()).orElseThrow(() -> new UserNotFoundException());
 
         return UserResponse.returnUser(user);
     }

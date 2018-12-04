@@ -2,12 +2,14 @@ package com.guidosit.gamexchange.game;
 
 
 import com.guidosit.gamexchange.exchangeproposal.ExchangeProposalService;
+import com.guidosit.gamexchange.user.UserNotFoundException;
 import com.guidosit.gamexchange.user.UserService;
 import com.guidosit.gamexchange.usergame.GameNotFoundForThisUser;
 import com.guidosit.gamexchange.usergame.UserGame;
 import com.guidosit.gamexchange.usergame.UserGameService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -47,10 +49,12 @@ public class GameService {
 
     public void proposeExchange(Integer gameId, String username) throws GameNotFoundForThisUser {
         exchangeProposalService.makeProposal(
-                userGameService.getUserGame(gameId).orElseThrow(() -> new GameNotFoundForThisUser()), userService.getUser(username).getId());
+                userGameService.getUserGame(gameId).orElseThrow(() -> new GameNotFoundForThisUser()),
+                userService.getUser(username).orElseThrow(() -> new UserNotFoundException()));
     }
 
     public Optional<List<Game>> getGamesFromOtherUsers(String username) {
-        return gameRepository.getAvailableGames(userService.getUser(username).getId());
+        return gameRepository.getAvailableGames(
+                userService.getUser(username).orElseThrow(() -> new UserNotFoundException()).getId());
     }
 }

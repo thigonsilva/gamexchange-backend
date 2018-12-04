@@ -1,6 +1,7 @@
 package com.guidosit.gamexchange.user;
 
 import com.guidosit.gamexchange.exchangeproposal.ExchangeProposal;
+import com.guidosit.gamexchange.exchangeproposal.ExchangeProposalResponse;
 import com.guidosit.gamexchange.exchangeproposal.ExchangeProposalService;
 import com.guidosit.gamexchange.game.Game;
 import com.guidosit.gamexchange.game.GameNotFoundException;
@@ -36,13 +37,15 @@ public class UserService {
         return userRepository.findById(id).get();
     }
 
-    public User getUser(String username) {
-        return userRepository.findByUsername(username);
+    public Optional<User> getUser(String username) {
+        if(username.indexOf("@") != -1)
+            return userRepository.findUserByEmail(username);
+        else
+            return userRepository.findByUsername(username);
     }
 
-    public void addGame(User user, Integer gameId) throws UserNotFoundException, GameNotFoundException {
-        user.addGame(gameService.getGame(gameId).orElseThrow(() ->
-                new GameNotFoundException("Jogo não encontrado")));
+    public void addGame(User user, Integer gameId) {
+        user.addGame(gameService.getGame(gameId).orElseThrow(() -> new GameNotFoundException("Jogo não encontrado")));
         userRepository.save(user);
     }
 
@@ -51,7 +54,7 @@ public class UserService {
     }
 
     public Optional<List<ExchangeProposal>> getProposalsForUser(String username) throws UserNotFoundException {
-        return exchangeProposalService.getProposals(userRepository.findByUsername(username));
+        return exchangeProposalService.getProposals(getUser(username).orElseThrow(() -> new UserNotFoundException()));
     }
 
     public User getUserByEmail(String email) throws UserNotFoundException {
@@ -68,5 +71,9 @@ public class UserService {
         if(userRepository.findUserByEmail(email).isPresent()) throw new UserEmailIsAlreadyInUseException();
 
         return userRepository.save(user);
+    }
+
+    public Optional<List<ExchangeProposal>> getTrades(String username) {
+        return exchangeProposalService.getFinishedProposals(getUser(username).orElseThrow(() -> new UserNotFoundException()));
     }
 }

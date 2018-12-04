@@ -24,12 +24,13 @@ public class UserController {
 
     @GetMapping
     public UserResponse getUser(Authentication auth) {
-        return UserResponse.returnUser(userService.getUser(auth.getName()));
+        return UserResponse.returnUser(
+                userService.getUser(auth.getName()).orElseThrow(() -> new UserNotFoundException()));
     }
 
     @GetMapping("/games")
-    public List<UserGameResponse> getGamesFromUser(Authentication auth) throws UserNotFoundException {
-        User userByEmail = userService.getUser(auth.getName());
+    public List<UserGameResponse> getGamesFromUser(Authentication auth) {
+        User userByEmail = userService.getUser(auth.getName()).orElseThrow(() -> new UserNotFoundException());
         return UserGameResponse.returnGamesFromUserGames(userByEmail.getGames());
     }
 
@@ -45,14 +46,19 @@ public class UserController {
     }
 
     @PostMapping("/game")
-    public void addGame(@RequestBody GameRequest game, Authentication auth)
-            throws UserNotFoundException, GameNotFoundException {
-        userService.addGame(userService.getUser(auth.getName()), game.getGameId());
+    public void addGame(@RequestBody GameRequest game, Authentication auth) {
+        userService.addGame(userService.getUser(auth.getName()).orElseThrow(() -> new UserNotFoundException()),
+                game.getGameId());
     }
 
     @GetMapping("/proposals")
     public List<ExchangeProposalResponse> getProposals(Authentication auth) throws UserNotFoundException {
         return ExchangeProposalResponse.returnListOfProposals(userService.getProposalsForUser(auth.getName()).orElse(new ArrayList<>()));
+    }
+
+    @GetMapping("/trades")
+    public List<ExchangeProposalResponse> getTrades(Authentication auth) throws UserNotFoundException {
+        return ExchangeProposalResponse.returnListOfProposalsFull(userService.getTrades(auth.getName()).orElse(new ArrayList<>()));
     }
 
 }

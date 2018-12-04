@@ -24,7 +24,7 @@ public class GameController {
         List<GameResponse> gameResponseList = new ArrayList<>();
         Optional<List<Game>> games;
 
-        if (!auth.isAuthenticated()) games = gameService.getGames();
+        if (null == auth) games = gameService.getGames();
         else games = gameService.getGamesFromOtherUsers(auth.getName());
 
         List<Game> lstGames = games.orElse(new ArrayList<>());

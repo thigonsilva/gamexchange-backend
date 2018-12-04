@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @Data
 public class ExchangeProposalRequest {
 
-    private Integer requesterUserId;
+    private Integer requesterGameId;
 
 }

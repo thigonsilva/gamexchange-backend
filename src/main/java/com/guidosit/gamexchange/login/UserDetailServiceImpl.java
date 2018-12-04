@@ -2,6 +2,7 @@ package com.guidosit.gamexchange.login;
 
 import com.guidosit.gamexchange.role.Role;
 import com.guidosit.gamexchange.user.User;
+import com.guidosit.gamexchange.user.UserNotFoundException;
 import com.guidosit.gamexchange.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -23,7 +24,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
         User user;
-        if(s.indexOf("@") == -1) user = userRepository.findByUsername(s);
+        if(s.indexOf("@") == -1) user = userRepository.findByUsername(s).orElseThrow(() -> new UserNotFoundException());
         else user = userRepository.findUserByEmail(s).orElseThrow(() -> new UsernameNotFoundException("E-mail not found"));
 
 
